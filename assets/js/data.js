@@ -111,3 +111,5 @@ const productos = [
     ]
   }
 ];
+
+window.productos = productos;
