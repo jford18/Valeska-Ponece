@@ -8,7 +8,7 @@ const productos = [
     precio: 405.00,
     nuevo: true,
     imagenes: [
-      "https://images.pexels.com/photos/1400606/pexels-photo-1400606.jpeg"
+      "https://images.pexels.com/photos/267202/pexels-photo-267202.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
     ]
   },
   {
