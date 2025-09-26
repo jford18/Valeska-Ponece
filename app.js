@@ -1,12 +1,8 @@
-import { productos } from "./data.js";
-
-const $grid = document.getElementById("grid-productos");
-const $year = document.getElementById("year");
-
 const fmtUSD = new Intl.NumberFormat("es-EC", { style: "currency", currency: "USD" });
+const placeholderImg = "https://via.placeholder.com/400x400?text=Sin+imagen";
 
 function cardHTML(p) {
-  const img = (p.imagenes && p.imagenes[0]) || "";
+  const img = (Array.isArray(p.imagenes) && p.imagenes[0]) || placeholderImg;
   return `
   <article class="card" data-id="${p.id}">
     <img class="card__img" src="${img}" alt="${p.nombre}">
@@ -23,13 +19,28 @@ function cardHTML(p) {
   </article>`;
 }
 
-function render() {
-  if (!$grid) return;
-  $grid.innerHTML = productos.map(cardHTML).join("");
-}
-
 document.addEventListener("DOMContentLoaded", () => {
-  render();
+  try {
+    const data = window.productos;
+    console.log("Productos cargados", data);
+
+    if (!Array.isArray(data)) {
+      console.error("La fuente de datos de productos no es un arreglo válido.", data);
+      return;
+    }
+
+    const $grid = document.getElementById("grid-productos");
+    if (!$grid) {
+      console.error("No se encontró el contenedor del catálogo.");
+      return;
+    }
+
+    $grid.innerHTML = data.map(cardHTML).join("");
+  } catch (error) {
+    console.error("Error al inicializar la aplicación:", error);
+  }
+
+  const $year = document.getElementById("year");
   if ($year) {
     $year.textContent = new Date().getFullYear();
   }
