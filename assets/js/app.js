@@ -1,6 +1,118 @@
 (function () {
   const { BRAND_NAME, TAGLINE, CURRENCY, PHONE_WHATSAPP, EMAIL } = BRAND_CONFIG;
 
+  function isAbsoluteUrl(url) {
+    return /^https?:\/\//i.test(url);
+  }
+
+  function kwFromProduct(p) {
+    const mapCat = { Anillos: 'ring', Collares: 'necklace', Aretes: 'earrings', Pulseras: 'bracelet' };
+    const mapMat = { Oro: 'gold', Plata: 'silver', Acero: 'steel', 'Oro Rosa': 'rose gold' };
+    const categoria = p && p.categoria;
+    const material = p && p.material;
+    const nombre = p && p.nombre;
+    const k1 = mapCat[categoria] || 'jewelry';
+    const k2 = mapMat[material] || '';
+    const k3 = (nombre || '').split(' ')[0];
+    return [k1, k2, k3].filter(Boolean).join(',');
+  }
+
+  function unsplashSrc(keywords, sig = '0') {
+    const keywordArray = Array.isArray(keywords)
+      ? keywords
+      : String(keywords)
+          .split(',')
+          .map((part) => part.trim())
+          .filter(Boolean);
+    const sanitizedKeywords = keywordArray.length ? keywordArray : ['jewelry'];
+    const query = sanitizedKeywords.map((part) => encodeURIComponent(part)).join(',');
+    return `https://source.unsplash.com/featured/800x800/?${query}&sig=${encodeURIComponent(sig)}`;
+  }
+
+  function getProductImage(product, index = 0) {
+    if (!product) {
+      return unsplashSrc('jewelry', `generic-${index}`);
+    }
+    const images = Array.isArray(product.imagenes) ? product.imagenes : [];
+    const img = images[index] || '';
+    if (img && isAbsoluteUrl(img)) {
+      if (/^https?:\/\/images\.unsplash\.com\//i.test(img) && !/auto=format/.test(img)) {
+        const separator = img.includes('?') ? '&' : '?';
+        return `${img}${separator}auto=format&fit=crop&w=800&q=80`;
+      }
+      return img;
+    }
+    const kw = product.imageKeyword || kwFromProduct(product);
+    return unsplashSrc(`jewelry,${kw}`, `${product.id || 'producto'}-${index}`);
+  }
+
+  const PLACEHOLDER_FALLBACK =
+    'data:image/svg+xml;utf8,' +
+    encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800">
+    <defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop stop-color="#1c1c1c" offset="0"/><stop stop-color="#2a2a2a" offset="1"/>
+    </linearGradient></defs>
+    <rect width="100%" height="100%" fill="url(#g)"/>
+    <text x="50%" y="50%" fill="#D4AF37" font-size="36" font-family="Arial" text-anchor="middle" dominant-baseline="middle">
+      Imagen no disponible
+    </text></svg>`);
+
+  function handleImgError(e, product, index = 0) {
+    const imgEl = e.currentTarget;
+    if (!imgEl) return;
+    const targetProduct = product || {};
+    if (imgEl.dataset.fallbackTried === '1') {
+      imgEl.src = PLACEHOLDER_FALLBACK;
+      return;
+    }
+    imgEl.dataset.fallbackTried = '1';
+    const kw = targetProduct.imageKeyword || kwFromProduct(targetProduct);
+    imgEl.src = unsplashSrc(`jewelry,${kw}`, `${targetProduct.id || 'producto'}-${index}-${Date.now()}`);
+  }
+
+  function applyImageAttributes(img, product, index = 0, options = {}) {
+    if (!img || !product) return;
+    const nombre = product.nombre || 'Producto';
+    const material = product.material || 'Joyería';
+    const width = options.width || 600;
+    const height = options.height || 600;
+    img.width = width;
+    img.height = height;
+    img.loading = options.loading || 'lazy';
+    img.decoding = 'async';
+    img.referrerPolicy = 'no-referrer';
+    if (options.className) {
+      img.classList.add(options.className);
+    }
+    img.alt = `${nombre} – ${material}`;
+    if (img.dataset && img.dataset.fallbackTried) {
+      delete img.dataset.fallbackTried;
+    }
+    img.src = getProductImage(product, index);
+  }
+
+  function createProductImageElement(product, index = 0, options = {}) {
+    const targetProduct = product || {};
+    const img = document.createElement('img');
+    if (options.className) {
+      img.classList.add(options.className);
+    }
+    img.addEventListener('error', (event) => handleImgError(event, targetProduct, index));
+    applyImageAttributes(img, targetProduct, index, options);
+    return img;
+  }
+
+  const productsWithFallback = PRODUCTS.map((product) => {
+    const clone = {
+      ...product,
+      imagenes: Array.isArray(product.imagenes) ? product.imagenes.slice() : []
+    };
+    if (!clone.imagenes.length) {
+      clone.imagenes = [getProductImage(clone, 0), getProductImage(clone, 1)];
+    }
+    return clone;
+  });
+
   const selectors = {
     menu: document.getElementById('menu'),
     toggle: document.querySelector('.header__toggle'),
@@ -72,10 +184,37 @@
       if (!stored) return [];
       const parsed = JSON.parse(stored);
       if (!Array.isArray(parsed)) return [];
-      return parsed.map((item) => ({
-        ...item,
-        cantidad: sanitizeQuantity(item.cantidad, item.stock, true)
-      }));
+      return parsed.map((item) => {
+        const product = productsWithFallback.find((p) => p.id === item.id);
+        const fallbackImages = Array.isArray(item.imagenes)
+          ? item.imagenes.slice()
+          : item.imagen
+          ? [item.imagen]
+          : [];
+        const productForImage = product
+          ? product
+          : {
+              id: item.id || `item-${Date.now()}`,
+              nombre: item.nombre || 'Producto',
+              material: item.material || 'Joyería',
+              categoria: item.categoria || '',
+              imageKeyword: item.imageKeyword || '',
+              imagenes: fallbackImages,
+              stock: item.stock ?? 0
+            };
+        const fallbackStock = Number.isFinite(productForImage.stock) ? productForImage.stock : 99;
+        const stock = Number.isFinite(item.stock) ? item.stock : fallbackStock;
+        return {
+          ...item,
+          nombre: item.nombre || productForImage.nombre,
+          material: item.material || productForImage.material,
+          categoria: item.categoria || productForImage.categoria,
+          imageKeyword: item.imageKeyword || productForImage.imageKeyword,
+          imagen: getProductImage(productForImage, 0),
+          cantidad: sanitizeQuantity(item.cantidad, stock, true),
+          stock
+        };
+      });
     } catch (error) {
       console.error('No se pudo cargar el carrito', error);
       return [];
@@ -91,8 +230,8 @@
   }
 
   const state = {
-    products: PRODUCTS.slice(),
-    filteredProducts: PRODUCTS.slice(),
+    products: productsWithFallback.slice(),
+    filteredProducts: productsWithFallback.slice(),
     search: '',
     filters: {
       category: 'all',
@@ -125,8 +264,8 @@
   }
 
   function populateFilters() {
-    const categories = Array.from(new Set(PRODUCTS.map((p) => p.categoria)));
-    const materials = Array.from(new Set(PRODUCTS.map((p) => p.material)));
+    const categories = Array.from(new Set(productsWithFallback.map((p) => p.categoria)));
+    const materials = Array.from(new Set(productsWithFallback.map((p) => p.material)));
 
     categories.forEach((cat) => {
       const option = document.createElement('option');
@@ -213,7 +352,6 @@
       card.innerHTML = `
         <div class="card__img">
           ${product.nuevo ? '<span class="card__badge">Nuevo</span>' : ''}
-          <img src="${product.imagenes[0]}" alt="${product.nombre}" loading="lazy" width="320" height="320">
         </div>
         <h3 class="card__title">${product.nombre}</h3>
         <div class="card__price">${hasDiscount ? `<del>${formatCurrency(product.precio)}</del>` : ''}<span>${formatCurrency(finalPrice)}</span></div>
@@ -223,11 +361,18 @@
           <button class="btn btn--primary" data-action="add" data-id="${product.id}">Agregar</button>
         </div>
       `;
+      const imgWrapper = card.querySelector('.card__img');
+      const cardImage = createProductImageElement(product, 0);
+      imgWrapper.appendChild(cardImage);
       selectors.productGrid.appendChild(card);
     });
   }
 
   function openModal(product, trigger) {
+    if (!product) return;
+    if (!Array.isArray(product.imagenes) || !product.imagenes.length) {
+      product.imagenes = [getProductImage(product, 0), getProductImage(product, 1)];
+    }
     state.modalProduct = product;
     state.modalImageIndex = 0;
     state.lastFocusedElement = trigger || document.activeElement;
@@ -253,14 +398,24 @@
   function updateModal() {
     const product = state.modalProduct;
     if (!product) return;
+    if (!Array.isArray(product.imagenes) || !product.imagenes.length) {
+      product.imagenes = [getProductImage(product, 0), getProductImage(product, 1)];
+    }
+    const totalImages = Math.max(product.imagenes.length, 1);
+    if (state.modalImageIndex >= totalImages) {
+      state.modalImageIndex = 0;
+    }
     selectors.modalTitle.textContent = product.nombre;
     selectors.modalDescription.textContent = product.descripcion;
     selectors.modalMaterial.textContent = product.material;
     selectors.modalSize.textContent = product.talla;
     selectors.modalWeight.textContent = product.peso;
     selectors.modalStock.textContent = `${product.stock} disponibles`;
-    selectors.modalImage.src = product.imagenes[state.modalImageIndex];
-    selectors.modalImage.alt = `${product.nombre} vista ${state.modalImageIndex + 1}`;
+    applyImageAttributes(selectors.modalImage, product, state.modalImageIndex, {
+      width: 600,
+      height: 600,
+      className: 'modal__img'
+    });
     selectors.modalQuantity.value = 1;
     const finalPrice = getFinalPrice(product);
     selectors.modalPrice.innerHTML = `${finalPrice !== product.precio ? `<del>${formatCurrency(product.precio)}</del>` : ''}<span>${formatCurrency(finalPrice)}</span>`;
@@ -272,14 +427,22 @@
     const existing = state.cart.find((item) => item.id === product.id);
     if (existing) {
       existing.cantidad = Math.min(existing.cantidad + normalizedQty, Math.min(product.stock, 99));
+      existing.imagen = getProductImage(product, 0);
+      existing.material = product.material;
+      existing.categoria = product.categoria;
+      existing.imageKeyword = product.imageKeyword || existing.imageKeyword || '';
+      existing.stock = product.stock;
     } else {
       state.cart.push({
         id: product.id,
         nombre: product.nombre,
+        categoria: product.categoria,
+        material: product.material,
+        imageKeyword: product.imageKeyword || '',
         precioBase: product.precio,
         precioFinal: finalPrice,
         cantidad: normalizedQty,
-        imagen: product.imagenes[0],
+        imagen: getProductImage(product, 0),
         nuevo: product.nuevo,
         stock: product.stock
       });
@@ -340,8 +503,34 @@
       state.cart.forEach((item) => {
         const row = document.createElement('article');
         row.className = 'cart-item';
-        row.innerHTML = `
-          <div class="cart-item__thumb"><img src="${item.imagen}" alt="${item.nombre}" loading="lazy" width="72" height="72"></div>
+        const productData =
+          state.products.find((p) => p.id === item.id) ||
+          {
+            id: item.id || `item-${Date.now()}`,
+            nombre: item.nombre || 'Producto',
+            material: item.material || 'Joyería',
+            categoria: item.categoria || '',
+            imageKeyword: item.imageKeyword || '',
+            imagenes: Array.isArray(item.imagenes) ? item.imagenes.slice() : item.imagen ? [item.imagen] : [],
+            stock: Number.isFinite(item.stock) ? item.stock : 99
+          };
+        item.material = item.material || productData.material;
+        item.categoria = item.categoria || productData.categoria;
+        item.imageKeyword = item.imageKeyword || productData.imageKeyword || '';
+        item.imagen = getProductImage(productData, 0);
+        if (!Number.isFinite(item.stock)) {
+          item.stock = Number.isFinite(productData.stock) ? productData.stock : 99;
+        }
+
+        const thumb = document.createElement('div');
+        thumb.className = 'cart-item__thumb';
+        const thumbImg = createProductImageElement(productData, 0, { width: 72, height: 72 });
+        thumb.appendChild(thumbImg);
+        row.appendChild(thumb);
+
+        row.insertAdjacentHTML(
+          'beforeend',
+          `
           <div class="cart-item__info">
             <div class="cart-item__title">${item.nombre}</div>
             <div class="cart-item__price">${formatCurrency(item.precioFinal)} ${item.nuevo ? '<span class="badge">-10%</span>' : ''}</div>
@@ -352,7 +541,8 @@
               <button type="button" data-cart-remove data-id="${item.id}" aria-label="Eliminar ${item.nombre}">✕</button>
             </div>
           </div>
-        `;
+        `
+        );
         selectors.cartItems.appendChild(row);
       });
     }
@@ -468,12 +658,13 @@
 
   function handleModalNavigation(event) {
     if (!state.modalProduct) return;
+    const totalImages = Math.max((state.modalProduct.imagenes && state.modalProduct.imagenes.length) || 0, 1);
     if (event.target.matches('[data-gallery-next]')) {
-      state.modalImageIndex = (state.modalImageIndex + 1) % state.modalProduct.imagenes.length;
+      state.modalImageIndex = (state.modalImageIndex + 1) % totalImages;
       updateModal();
     }
     if (event.target.matches('[data-gallery-prev]')) {
-      state.modalImageIndex = (state.modalImageIndex - 1 + state.modalProduct.imagenes.length) % state.modalProduct.imagenes.length;
+      state.modalImageIndex = (state.modalImageIndex - 1 + totalImages) % totalImages;
       updateModal();
     }
     if (event.target.matches('[data-close-modal]')) {
@@ -625,6 +816,13 @@
     selectors.modal.addEventListener('click', handleModalNavigation);
     selectors.modal.addEventListener('click', handleModalQuantity);
     selectors.modalAdd.addEventListener('click', handleModalAdd);
+    selectors.modalImage.addEventListener('error', (event) => {
+      if (!state.modalProduct) {
+        event.currentTarget.src = PLACEHOLDER_FALLBACK;
+        return;
+      }
+      handleImgError(event, state.modalProduct, state.modalImageIndex);
+    });
     selectors.cartButton.addEventListener('click', (event) => openCart(event.currentTarget));
     selectors.cartPanel.addEventListener('click', (event) => {
       if (event.target.matches('[data-close-cart]')) {
@@ -656,6 +854,10 @@
   }
 
   function init() {
+    selectors.modalImage.classList.add('modal__img');
+    selectors.modalImage.loading = 'lazy';
+    selectors.modalImage.decoding = 'async';
+    selectors.modalImage.referrerPolicy = 'no-referrer';
     initBranding();
     populateFilters();
     applyFilters();
