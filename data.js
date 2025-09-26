@@ -93,4 +93,4 @@ const productos = [
   }
 ];
 
-export { productos };
+window.productos = productos;
