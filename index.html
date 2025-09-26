@@ -1,41 +1,328 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Valeska Ponce | Joyería</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              'vp-gold': '#C8A96A',
-              'vp-black': '#1A1A1A',
-              'vp-ivory': '#FAF7F2',
-            },
-            fontFamily: {
-              sans: ['"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif'],
-            }
-          }
-        }
-      }
-    </script>
-    <link rel="stylesheet" href="./index.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💍</text></svg>">
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@18.2.0",
-    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/"
-  }
-}
-</script>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JF Joyas | Elegancia que perdura</title>
+  <meta name="description" content="JF Joyas, catálogo de joyería fina en oro, plata y acero. Descubre anillos, collares, aretes y pulseras con estilo moderno y sofisticado.">
+  <meta property="og:title" content="JF Joyas">
+  <meta property="og:description" content="Elegancia que perdura en cada pieza de joyería.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/img/hero.jpg">
+  <meta property="og:url" content="https://jfjoyas.com">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-  <body class="bg-vp-ivory">
-    <div id="root"></div>
-    <script type="text/babel" data-type="module" src="./index.jsx"></script>
-  </body>
+<body>
+  <a class="skip-link" href="#catalogo">Saltar al catálogo</a>
+  <header class="header" id="inicio">
+    <div class="header__inner">
+      <a href="#inicio" class="header__logo" aria-label="Inicio JF Joyas">
+        <img src="assets/img/logo.svg" alt="JF Joyas" width="120" height="32">
+      </a>
+      <nav class="header__nav" aria-label="Principal">
+        <button class="header__toggle" aria-expanded="false" aria-controls="menu">☰</button>
+        <ul class="header__menu" id="menu">
+          <li><a href="#inicio">Inicio</a></li>
+          <li><a href="#catalogo">Catálogo</a></li>
+          <li><a href="#sobre-nosotros">Sobre Nosotros</a></li>
+          <li><a href="#testimonios">Testimonios</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+          <li><button class="header__cart-btn" data-open-cart>Carrito<span class="header__cart-count" aria-live="polite">0</span></button></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero__content">
+        <h1 id="hero-title">Elegancia que perdura</h1>
+        <p>Descubre piezas únicas que combinan lujo, diseño moderno y artesanía de excelencia.</p>
+        <a class="btn btn--primary" href="#catalogo">Ver catálogo</a>
+      </div>
+      <div class="hero__media" aria-hidden="true">
+        <img src="assets/img/hero.jpg" alt="Colección de joyas JF" width="800" height="600" loading="lazy">
+      </div>
+    </section>
+
+    <section class="catalogo" id="catalogo" aria-labelledby="catalogo-title">
+      <div class="section-header">
+        <h2 id="catalogo-title">Catálogo Destacado</h2>
+        <p>Explora nuestra colección seleccionada de anillos, collares, aretes y pulseras.</p>
+      </div>
+      <div class="catalogo__toolbar" role="region" aria-label="Herramientas de búsqueda y filtrado">
+        <label class="field">
+          <span class="field__label">Buscar</span>
+          <input type="search" id="search" placeholder="Busca por nombre o características" aria-label="Buscar joyas">
+        </label>
+        <label class="field">
+          <span class="field__label">Categoría</span>
+          <select id="filter-category" aria-label="Filtrar por categoría">
+            <option value="all">Todas</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field__label">Material</span>
+          <select id="filter-material" aria-label="Filtrar por material">
+            <option value="all">Todos</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field__label">Precio</span>
+          <select id="filter-price" aria-label="Filtrar por precio">
+            <option value="all">Todos</option>
+            <option value="under150">Hasta 150 USD</option>
+            <option value="150-300">150 - 300 USD</option>
+            <option value="300-600">300 - 600 USD</option>
+            <option value="above600">Más de 600 USD</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field__label">Ordenar</span>
+          <select id="sort" aria-label="Ordenar catálogo">
+            <option value="default">Destacados</option>
+            <option value="price-asc">Precio: menor a mayor</option>
+            <option value="price-desc">Precio: mayor a menor</option>
+            <option value="newest">Nuevos</option>
+          </select>
+        </label>
+      </div>
+      <div class="catalogo__grid" id="product-grid" aria-live="polite"></div>
+    </section>
+
+    <section class="about" id="sobre-nosotros" aria-labelledby="sobre-title">
+      <div class="section-header">
+        <h2 id="sobre-title">Sobre JF Joyas</h2>
+        <p>Más de 15 años creando joyería de lujo con materiales certificados.</p>
+      </div>
+      <div class="about__grid">
+        <article class="about__card">
+          <h3>Diseño personalizado</h3>
+          <p>Creamos piezas únicas para bodas, aniversarios y momentos inolvidables con asesoría especializada.</p>
+        </article>
+        <article class="about__card">
+          <h3>Materiales certificados</h3>
+          <p>Trabajamos con oro de 18k, plata 925 y acero quirúrgico hipoalergénico de alta durabilidad.</p>
+        </article>
+        <article class="about__card">
+          <h3>Garantía y servicio</h3>
+          <p>Ofrecemos mantenimiento, limpieza y ajustes gratuitos durante el primer año de tu compra.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="testimonios" id="testimonios" aria-labelledby="testimonios-title">
+      <div class="section-header">
+        <h2 id="testimonios-title">Testimonios</h2>
+        <p>Clientes que ya disfrutan de la elegancia de JF Joyas.</p>
+      </div>
+      <div class="testimonios__grid">
+        <figure class="testimonial">
+          <blockquote>“Recibí mi anillo de compromiso y superó todas mis expectativas. La atención fue impecable.”</blockquote>
+          <figcaption>— Daniela P.</figcaption>
+        </figure>
+        <figure class="testimonial">
+          <blockquote>“La calidad es excepcional y la presentación increíble. Definitivamente volveré a comprar.”</blockquote>
+          <figcaption>— Andrés R.</figcaption>
+        </figure>
+        <figure class="testimonial">
+          <blockquote>“Me guiaron en todo el proceso de personalización de un collar. El resultado es una obra de arte.”</blockquote>
+          <figcaption>— Sofía L.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="faq" id="faq" aria-labelledby="faq-title">
+      <div class="section-header">
+        <h2 id="faq-title">Preguntas frecuentes</h2>
+      </div>
+      <div class="faq__items">
+        <details>
+          <summary>¿Ofrecen envíos internacionales?</summary>
+          <p>Sí, enviamos a toda Latinoamérica con seguros de transporte y seguimiento en tiempo real.</p>
+        </details>
+        <details>
+          <summary>¿Cómo funciona la garantía?</summary>
+          <p>Todas las piezas incluyen garantía de un año que cubre limpieza, pulido y ajustes de talla.</p>
+        </details>
+        <details>
+          <summary>¿Puedo personalizar una joya?</summary>
+          <p>Por supuesto. Agenda una cita con nuestros asesores para crear un diseño exclusivo.</p>
+        </details>
+      </div>
+    </section>
+
+    <section class="checkout" id="checkout" aria-labelledby="checkout-title">
+      <div class="section-header">
+        <h2 id="checkout-title">Checkout</h2>
+        <p>Completa tus datos para finalizar el pedido.</p>
+      </div>
+      <div class="checkout__layout">
+        <form class="checkout__form" id="checkout-form" novalidate>
+          <div class="form-group">
+            <label for="cliente-nombre">Nombre completo*</label>
+            <input id="cliente-nombre" name="nombre" type="text" required autocomplete="name" placeholder="Tu nombre">
+          </div>
+          <div class="form-group">
+            <label for="cliente-email">Email*</label>
+            <input id="cliente-email" name="email" type="email" required autocomplete="email" placeholder="tu@email.com">
+          </div>
+          <div class="form-group">
+            <label for="cliente-telefono">Teléfono / WhatsApp*</label>
+            <input id="cliente-telefono" name="telefono" type="tel" required autocomplete="tel" placeholder="099 999 9999">
+          </div>
+          <div class="form-group">
+            <label for="cliente-direccion">Dirección*</label>
+            <input id="cliente-direccion" name="direccion" type="text" required autocomplete="street-address" placeholder="Calle principal y referencia">
+          </div>
+          <div class="form-group">
+            <label for="cliente-ciudad">Ciudad*</label>
+            <input id="cliente-ciudad" name="ciudad" type="text" required autocomplete="address-level2" placeholder="Ciudad">
+          </div>
+          <div class="form-group">
+            <label for="cliente-notas">Notas</label>
+            <textarea id="cliente-notas" name="notas" rows="3" placeholder="Indicaciones adicionales"></textarea>
+          </div>
+          <button class="btn btn--primary" type="submit">Confirmar pedido</button>
+          <p class="form-helper">Campos marcados con * son obligatorios.</p>
+          <div class="form-feedback" aria-live="polite"></div>
+        </form>
+        <aside class="checkout__summary" aria-live="polite">
+          <h3>Resumen del pedido</h3>
+          <table class="summary-table">
+            <thead>
+              <tr>
+                <th scope="col">Producto</th>
+                <th scope="col">Cant.</th>
+                <th scope="col">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody id="summary-body"></tbody>
+            <tfoot>
+              <tr>
+                <td colspan="2">Subtotal</td>
+                <td id="summary-subtotal">—</td>
+              </tr>
+              <tr>
+                <td colspan="2">Descuento</td>
+                <td id="summary-discount">—</td>
+              </tr>
+              <tr>
+                <td colspan="2">Total</td>
+                <td id="summary-total">—</td>
+              </tr>
+            </tfoot>
+          </table>
+          <div class="checkout__success" hidden>
+            <h3>¡Pedido confirmado!</h3>
+            <p id="order-number"></p>
+            <button class="btn btn--outline" type="button" id="print-order">Imprimir / Guardar PDF</button>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="contacto" id="contacto" aria-labelledby="contacto-title">
+      <div class="section-header">
+        <h2 id="contacto-title">Contáctanos</h2>
+        <p>Estamos listos para asesorarte en tu próxima compra.</p>
+      </div>
+      <div class="contacto__layout">
+        <form class="contacto__form">
+          <div class="form-group">
+            <label for="contacto-nombre">Nombre</label>
+            <input id="contacto-nombre" type="text" placeholder="Tu nombre">
+          </div>
+          <div class="form-group">
+            <label for="contacto-email">Email</label>
+            <input id="contacto-email" type="email" placeholder="tu@email.com">
+          </div>
+          <div class="form-group">
+            <label for="contacto-mensaje">Mensaje</label>
+            <textarea id="contacto-mensaje" rows="4" placeholder="¿Cómo podemos ayudarte?"></textarea>
+          </div>
+          <button class="btn btn--outline" type="button">Enviar consulta</button>
+        </form>
+        <div class="contacto__info">
+          <p><strong>Teléfono:</strong> <a data-phone href="tel:+593999999999">+593 99 999 9999</a></p>
+          <p><strong>Email:</strong> <a data-email href="mailto:ventas@jfjoyas.com">ventas@jfjoyas.com</a></p>
+          <p><strong>Horario:</strong> Lunes a sábado de 10h00 a 19h00.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <p>© <span id="year"></span> JF Joyas. Todos los derechos reservados.</p>
+      <nav aria-label="Legal">
+        <a href="#">Política de privacidad</a>
+        <a href="#">Términos y condiciones</a>
+      </nav>
+      <div class="footer__social">
+        <a href="https://www.instagram.com" target="_blank" rel="noreferrer">Instagram</a>
+        <a href="https://www.facebook.com" target="_blank" rel="noreferrer">Facebook</a>
+      </div>
+    </div>
+  </footer>
+
+  <div class="modal" id="product-modal" role="dialog" aria-modal="true" aria-labelledby="product-modal-title" hidden>
+    <div class="modal__overlay" data-close-modal></div>
+    <div class="modal__content" role="document">
+      <button class="modal__close" type="button" aria-label="Cerrar" data-close-modal>&times;</button>
+      <div class="modal__gallery">
+        <button class="modal__nav" type="button" data-gallery-prev aria-label="Imagen anterior">‹</button>
+        <img id="modal-image" src="" alt="Detalle de producto" width="600" height="600" loading="lazy">
+        <button class="modal__nav" type="button" data-gallery-next aria-label="Imagen siguiente">›</button>
+      </div>
+      <div class="modal__details">
+        <h3 id="product-modal-title"></h3>
+        <p id="modal-description"></p>
+        <ul class="modal__specs">
+          <li><strong>Material:</strong> <span id="modal-material"></span></li>
+          <li><strong>Talla:</strong> <span id="modal-size"></span></li>
+          <li><strong>Peso:</strong> <span id="modal-weight"></span></li>
+          <li><strong>Stock:</strong> <span id="modal-stock"></span></li>
+        </ul>
+        <div class="modal__price" id="modal-price"></div>
+        <div class="quantity-selector">
+          <button type="button" data-qty-decrease aria-label="Disminuir cantidad">−</button>
+          <input type="number" id="modal-quantity" min="1" max="99" value="1" inputmode="numeric" aria-label="Cantidad">
+          <button type="button" data-qty-increase aria-label="Incrementar cantidad">+</button>
+        </div>
+        <button class="btn btn--primary" id="modal-add" type="button">Agregar al carrito</button>
+      </div>
+    </div>
+  </div>
+
+  <aside class="cart" id="cart-panel" aria-labelledby="cart-title" hidden>
+    <div class="cart__overlay" data-close-cart></div>
+    <div class="cart__content" role="dialog" aria-modal="true">
+      <header class="cart__header">
+        <h2 id="cart-title">Tu carrito</h2>
+        <button class="cart__close" type="button" aria-label="Cerrar carrito" data-close-cart>&times;</button>
+      </header>
+      <div class="cart__body" id="cart-items" aria-live="polite"></div>
+      <footer class="cart__footer">
+        <div class="cart__summary">
+          <div><span>Subtotal:</span> <span id="cart-subtotal">—</span></div>
+          <div><span>Descuento:</span> <span id="cart-discount">—</span></div>
+          <div class="cart__total"><span>Total:</span> <span id="cart-total">—</span></div>
+        </div>
+        <button class="btn btn--primary" type="button" id="go-checkout">Ir a Checkout</button>
+      </footer>
+    </div>
+  </aside>
+
+  <a class="whatsapp" id="whatsapp" href="https://wa.me/593999999999?text=Hola%20JF%20Joyas,%20quiero%20más%20información" target="_blank" rel="noreferrer" aria-label="Escríbenos por WhatsApp">
+    <span>WhatsApp</span>
+  </a>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
 </html>
