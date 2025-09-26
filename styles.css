@@ -7,7 +7,7 @@
   --gold: #d4af37;
   --card-bg: #1a1a1a;
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-  --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 * {
@@ -102,15 +102,22 @@ img {
 }
 
 .hero__layout {
-  display: grid;
-  gap: 48px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  text-align: center;
+  gap: 32px;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .hero__copy {
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 20px;
-  max-width: 520px;
+  max-width: 640px;
+  text-align: center;
 }
 
 .hero__eyebrow {
@@ -122,6 +129,10 @@ img {
 
 .hero__media {
   position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  max-width: 520px;
 }
 
 .hero__glow {
@@ -136,7 +147,7 @@ img {
   position: relative;
   z-index: 1;
   width: min(100%, 520px);
-  border-radius: 18px;
+  border-radius: 20px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
@@ -216,11 +227,19 @@ img {
 .btn--gold {
   background: var(--gold);
   color: #0f0f0f;
+  box-shadow: 0 12px 32px rgba(212, 175, 55, 0.35);
+  transition: background-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
 }
 
 .btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.btn--gold:hover,
+.btn--gold:focus-visible {
+  background: #b8962d;
+  box-shadow: 0 10px 28px rgba(184, 150, 45, 0.45);
 }
 
 .price {
