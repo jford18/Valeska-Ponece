@@ -1,7 +1,6 @@
-
 import React from 'react';
 
-const About: React.FC = () => {
+const About = () => {
   return (
     <section id="about" className="py-20 bg-vp-ivory">
       <div className="container mx-auto px-6 flex flex-col md:flex-row items-center gap-12">

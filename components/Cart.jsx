@@ -1,17 +1,6 @@
-
 import React from 'react';
-import type { CartItem } from '../types';
 
-interface CartProps {
-  isOpen: boolean;
-  onClose: () => void;
-  cartItems: CartItem[];
-  removeFromCart: (id: number) => void;
-  updateQuantity: (id: number, quantity: number) => void;
-  clearCart: () => void;
-}
-
-const Cart: React.FC<CartProps> = ({ isOpen, onClose, cartItems, removeFromCart, updateQuantity, clearCart }) => {
+const Cart = ({ isOpen, onClose, cartItems, removeFromCart, updateQuantity, clearCart }) => {
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   return (

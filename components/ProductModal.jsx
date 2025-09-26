@@ -1,13 +1,6 @@
 import React from 'react';
-import type { Product } from '../types';
 
-interface ProductModalProps {
-  product: Product;
-  onClose: () => void;
-  addToCart: (product: Product) => void;
-}
-
-const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, addToCart }) => {
+const ProductModal = ({ product, onClose, addToCart }) => {
   
   const handleAddToCart = () => {
     addToCart(product);

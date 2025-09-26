@@ -1,24 +1,22 @@
-
 import React, { useState, useEffect } from 'react';
-import Header from './components/Header';
-import Hero from './components/Hero';
-import Collection from './components/Collection';
-import About from './components/About';
-import Testimonials from './components/Testimonials';
-import FAQ from './components/FAQ';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
-import Cart from './components/Cart';
-import ProductModal from './components/ProductModal';
-import { useCart } from './hooks/useCart';
-import type { Product } from './types';
+import Header from './components/Header.jsx';
+import Hero from './components/Hero.jsx';
+import Collection from './components/Collection.jsx';
+import About from './components/About.jsx';
+import Testimonials from './components/Testimonials.jsx';
+import FAQ from './components/FAQ.jsx';
+import Contact from './components/Contact.jsx';
+import Footer from './components/Footer.jsx';
+import Cart from './components/Cart.jsx';
+import ProductModal from './components/ProductModal.jsx';
+import { useCart } from './hooks/useCart.js';
 
-const App: React.FC = () => {
+const App = () => {
   const { cart, addToCart, removeFromCart, updateQuantity, clearCart, getTotalItems } = useCart();
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
-  const handleProductClick = (product: Product) => {
+  const handleProductClick = (product) => {
     setSelectedProduct(product);
   };
 
