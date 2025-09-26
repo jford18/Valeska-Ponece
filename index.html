@@ -25,7 +25,7 @@
           <li><a href="#testimonios">Testimonios</a></li>
           <li><a href="#faq">FAQ</a></li>
           <li><a href="#contacto">Contacto</a></li>
-          <li><a href="#carrito">Carrito[0]</a></li>
+          <li><a id="cart-link" href="#carrito">Carrito [0]</a></li>
         </ul>
       </nav>
     </div>
@@ -127,7 +127,9 @@
     <section id="carrito" class="container cart" aria-labelledby="cart-title">
       <div class="cart__box">
         <h2 id="cart-title">Carrito</h2>
-        <p>Tu carrito está vacío por ahora. Explora el catálogo y agrega tus joyas favoritas.</p>
+        <div id="cart-content" class="cart__content" aria-live="polite">
+          <p>Tu carrito está vacío por ahora. Explora el catálogo y agrega tus joyas favoritas.</p>
+        </div>
       </div>
     </section>
   </main>
