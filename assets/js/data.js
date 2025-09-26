@@ -13,10 +13,11 @@ const PRODUCTS = [
     peso: '4 g',
     descripcion: 'Anillo en oro amarillo de 18k con incrustaciones de brillantes corte baguette.',
     imagenes: [
-      'assets/img/products/product-1.jpg',
+      'https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&w=800&q=80',
       'assets/img/products/product-2.jpg',
-      'assets/img/products/product-3.jpg'
-    ]
+      'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80'
+    ],
+    imageKeyword: 'anillo oro brillante'
   },
   {
     id: 'anillo-solstice',
@@ -33,9 +34,10 @@ const PRODUCTS = [
     descripcion: 'Plata 925 con baño de rodio y circonias de alto brillo en patrón envolvente.',
     imagenes: [
       'assets/img/products/product-2.jpg',
-      'assets/img/products/product-3.jpg',
+      'https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&w=800&q=80',
       'assets/img/products/product-4.jpg'
-    ]
+    ],
+    imageKeyword: 'anillo plata minimalista'
   },
   {
     id: 'collar-constella',
@@ -51,10 +53,11 @@ const PRODUCTS = [
     peso: '12 g',
     descripcion: 'Collar de oro amarillo de 18k con dije central inspirado en constelaciones.',
     imagenes: [
-      'assets/img/products/product-3.jpg',
+      'https://images.unsplash.com/photo-1518544801976-3e159e6abb92?auto=format&fit=crop&w=800&q=80',
       'assets/img/products/product-4.jpg',
       'assets/img/products/product-5.jpg'
-    ]
+    ],
+    imageKeyword: 'collar oro constelacion'
   },
   {
     id: 'collar-luna-nova',
@@ -72,8 +75,9 @@ const PRODUCTS = [
     imagenes: [
       'assets/img/products/product-4.jpg',
       'assets/img/products/product-5.jpg',
-      'assets/img/products/product-6.jpg'
-    ]
+      'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80'
+    ],
+    imageKeyword: 'collar plata madreperla'
   },
   {
     id: 'aretes-aurum',
