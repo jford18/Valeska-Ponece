@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-labelledby="title desc">
+  <title id="title">Valeska Ponce Logo</title>
+  <desc id="desc">Stylized initials VP inside a circle</desc>
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#6366f1" />
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="56" fill="url(#grad)" />
+  <path d="M38 82L50 38h14l12 44h-11l-2.2-10H50.7L48.5 82H38zm21-22h11.4L61 48.6 59 60z" fill="#0f172a" />
+</svg>
