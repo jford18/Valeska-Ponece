@@ -1,0 +1,20 @@
+[
+  {
+    "id": "ux-audit",
+    "title": "Auditoría UX Integral",
+    "description": "Evaluamos la experiencia de usuario de tu producto para detectar oportunidades claras de mejora.",
+    "price": "Desde $500"
+  },
+  {
+    "id": "brand-sprint",
+    "title": "Brand Strategy Sprint",
+    "description": "Definimos mensajes, tono y visuales para impulsar una identidad memorable y coherente.",
+    "price": "Desde $750"
+  },
+  {
+    "id": "web-refresh",
+    "title": "Web Refresh Express",
+    "description": "Rediseñamos tu sitio estático con foco en performance, accesibilidad y contenido estratégico.",
+    "price": "Desde $980"
+  }
+]
